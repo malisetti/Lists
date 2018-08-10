@@ -14,10 +14,10 @@ public interface ItemDao {
     public List<Item> getAllItems();
 
     @Query("SELECT * FROM item WHERE parent_id IS NULL ORDER BY updated_at DESC, created_at")
-    public List<Item> getAllParentItems();
+    public List<Item> getAllRoots();
 
     @Query("SELECT * FROM item WHERE parent_id = (:uid) ORDER BY updated_at DESC, created_at")
-    public List<Item> getAllItemsOfParentItem(Integer uid);
+    public List<Item> getAllItemsOfParent(Integer uid);
 
     @Query("SELECT * FROM item WHERE content LIKE (:content) ORDER BY updated_at DESC, created_at")
     public List<Item> findItemsWithContent(String content);
@@ -26,10 +26,10 @@ public interface ItemDao {
     public List<Item> searchItemsOfParent(Integer uid, String content);
 
     @Query("SELECT * FROM item WHERE parent_id IS NULL AND content LIKE (:content) ORDER BY updated_at DESC, created_at")
-    public List<Item> searchParents(String content);
+    public List<Item> searchRoots(String content);
 
     @Query("SELECT COUNT(uid) FROM item WHERE parent_id = (:parentId)")
-    public Integer countChildren(Integer parentId);
+    public Integer countChildrenOfRoot(Integer parentId);
 
     @Insert
     public void insert(Item item);
