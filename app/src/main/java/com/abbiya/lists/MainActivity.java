@@ -4,12 +4,17 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements IItemClickListener {
+
+    private RecyclerView mRecyclerView;
+    private ListItemAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,10 +27,32 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                mAdapter.addItem(new Item() {{
+                    setContent("new content");
+                }});
+                Snackbar.make(view, "new item added", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
+
+        initList();
+    }
+
+    private void initList() {
+        mRecyclerView = (RecyclerView) findViewById(R.id.rv_lists);
+
+        // use this setting to improve performance if you know that changes
+        // in content do not change the layout size of the RecyclerView
+        mRecyclerView.setHasFixedSize(true);
+
+
+        // use a linear layout manager
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        // specify an adapter (see also next example)
+        mAdapter = new ListItemAdapter(Mocked.ITEMS, this);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -48,5 +75,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onListItemClicked(Item item) {
+        Snackbar.make(findViewById(R.id.crl_main), "Item added", Snackbar.LENGTH_SHORT).show();
     }
 }
