@@ -16,11 +16,17 @@ public interface ItemDao {
     @Query("SELECT * FROM item WHERE parent_id IS NULL ORDER BY updated_at DESC, created_at")
     public List<Item> getAllParentItems();
 
-    @Query("SELECT * FROM item WHERE parent_id == (:uid) ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item WHERE parent_id = (:uid) ORDER BY updated_at DESC, created_at")
     public List<Item> getAllItemsOfParentItem(Integer uid);
 
     @Query("SELECT * FROM item WHERE content LIKE (:content) ORDER BY updated_at DESC, created_at")
     public List<Item> findItemsWithContent(String content);
+
+    @Query("SELECT * FROM item WHERE parent_id = (:uid) AND content LIKE (:content) ORDER BY updated_at DESC, created_at")
+    public List<Item> searchItemsOfParent(Integer uid, String content);
+
+    @Query("SELECT * FROM item WHERE parent_id IS NULL AND content LIKE (:content) ORDER BY updated_at DESC, created_at")
+    public List<Item> searchParents(String content);
 
     @Insert
     public void insert(Item item);
