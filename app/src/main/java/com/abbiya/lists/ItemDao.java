@@ -28,6 +28,9 @@ public interface ItemDao {
     @Query("SELECT * FROM item WHERE parent_id IS NULL AND content LIKE (:content) ORDER BY updated_at DESC, created_at")
     public List<Item> searchParents(String content);
 
+    @Query("SELECT COUNT(uid) FROM item WHERE parent_id = (:parentId)")
+    public Integer countChildren(Integer parentId);
+
     @Insert
     public void insert(Item item);
 
