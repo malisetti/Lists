@@ -11,7 +11,7 @@ import java.util.List;
 @Dao
 public interface ItemDao {
     // get all items
-    @Query("SELECT * FROM item ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item ORDER BY updated_at DESC, created_at DESC")
     public List<Item> getAllItems();
 
     // get an item by id
@@ -19,23 +19,23 @@ public interface ItemDao {
     public Item getItem(Integer uid);
 
     // get all top level items
-    @Query("SELECT * FROM item WHERE parent_id IS NULL ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item WHERE parent_id IS NULL ORDER BY updated_at DESC, created_at DESC")
     public List<Item> getAllRoots();
 
     // get children of an item
-    @Query("SELECT * FROM item WHERE parent_id = (:uid) ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item WHERE parent_id = (:uid) ORDER BY updated_at DESC, created_at DESC")
     public List<Item> getAllItemsOfParent(Integer uid);
 
     // search all items for content and return items
-    @Query("SELECT * FROM item WHERE content LIKE (:content) ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item WHERE content LIKE (:content) ORDER BY updated_at DESC, created_at DESC")
     public List<Item> findItemsWithContent(String content);
 
     // search child items of an item for content
-    @Query("SELECT * FROM item WHERE parent_id = (:uid) AND content LIKE (:content) ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item WHERE parent_id = (:uid) AND content LIKE (:content) ORDER BY updated_at DESC, created_at DESC")
     public List<Item> searchItemsOfParent(Integer uid, String content);
 
     // search only the top level root items for content
-    @Query("SELECT * FROM item WHERE parent_id IS NULL AND content LIKE (:content) ORDER BY updated_at DESC, created_at")
+    @Query("SELECT * FROM item WHERE parent_id IS NULL AND content LIKE (:content) ORDER BY updated_at DESC, created_at DESC")
     public List<Item> searchRoots(String content);
 
     // get children count of a item
