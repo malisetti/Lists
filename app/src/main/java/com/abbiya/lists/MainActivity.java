@@ -22,11 +22,22 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
     private ItemViewModel mItemViewModel;
+    private static final String PARENT_ID = "parent_id";
+
+    Integer parentID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Intent i = getIntent();
+        if (i == null) {
+            int parentID = i.getExtras().getInt(PARENT_ID);
+            this.parentID = new Integer(parentID);
+        } else {
+            this.parentID = null;
+        }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         final ItemListAdapter adapter = new ItemListAdapter(this);
@@ -35,12 +46,21 @@ public class MainActivity extends AppCompatActivity {
 
         mItemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
 
-        mItemViewModel.getRoots().observe(this, new Observer<List<Item>>() {
-            @Override
-            public void onChanged(@Nullable List<Item> items) {
-                adapter.setItems(items);
-            }
-        });
+        if (parentID == null) {
+            mItemViewModel.getRoots().observe(this, new Observer<List<Item>>() {
+                @Override
+                public void onChanged(@Nullable List<Item> items) {
+                    adapter.setItems(items);
+                }
+            });
+        } else {
+            mItemViewModel.getChildren(parentID).observe(this, new Observer<List<Item>>() {
+                @Override
+                public void onChanged(@Nullable List<Item> items) {
+                    adapter.setItems(items);
+                }
+            });
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

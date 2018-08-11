@@ -22,6 +22,10 @@ public class ItemRepository {
         return mRoots;
     }
 
+    LiveData<List<Item>> getChildren(int i) {
+        return mItemDao.getAllItemsOfParent(i);
+    }
+
     public void insert(Item item) {
         new insertAsyncTask(mItemDao).execute(item);
     }
@@ -31,7 +35,7 @@ public class ItemRepository {
         private ItemDao itemDao;
 
         insertAsyncTask(ItemDao itemDao) {
-            itemDao = itemDao;
+            this.itemDao = itemDao;
         }
 
         @Override

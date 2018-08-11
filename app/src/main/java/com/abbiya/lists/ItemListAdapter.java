@@ -50,11 +50,11 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
     }
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
-        private final TextView itemView = null;
+        private final TextView itemView;
 
         private ItemViewHolder(View itemView) {
             super(itemView);
-            itemView = itemView.findViewById(R.id.textView);
+            this.itemView = itemView.findViewById(R.id.textView);
         }
     }
 }

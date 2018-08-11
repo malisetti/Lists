@@ -24,6 +24,10 @@ public class ItemViewModel extends AndroidViewModel {
         return mRoots;
     }
 
+    LiveData<List<Item>> getChildren(int i) {
+        return mRepository.getChildren(i);
+    }
+
     public void insert(Item item) {
         mRepository.insert(item);
     }
