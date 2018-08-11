@@ -40,7 +40,12 @@ public class ItemRepository {
 
         @Override
         protected Item doInBackground(Item... items) {
-            itemDao.insert(items[0]);
+            try {
+                itemDao.insert(items[0]);
+            } catch (Exception e) {
+
+            }
+
             return null;
         }
     }

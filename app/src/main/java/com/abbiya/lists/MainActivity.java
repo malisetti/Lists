@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
         Intent i = getIntent();
         if (i != null && i.getExtras() != null) {
             int parentID = i.getExtras().getInt(PARENT_ID);
-            this.parentID = new Integer(parentID);
+            if (parentID != 0) {
+                this.parentID = new Integer(parentID);
+            }
         } else {
             this.parentID = null;
         }
@@ -111,7 +114,10 @@ public class MainActivity extends AppCompatActivity {
 
             Item item = new Item();
             item.setContent(content);
-            item.setParentId(parentID);
+            if (parentID != null) {
+                Log.e(this.getClass().getSimpleName(), "hello" + parentID.toString());
+                item.setParentId(parentID);
+            }
             item.setCreatedAt(d);
             item.setUpdatedAt(d);
 
