@@ -10,14 +10,16 @@ import android.support.annotation.Nullable;
 
 import java.util.Date;
 
-@Entity(indices = {@Index("content"), @Index("parent_id")},
+@Entity(tableName = "items", indices = {@Index("content"), @Index("parent_id")},
         foreignKeys = @ForeignKey(entity = Item.class,
-        parentColumns = "uid",
-        childColumns = "parent_id",
-        onDelete = ForeignKey.CASCADE))
+                parentColumns = "uid",
+                childColumns = "parent_id",
+                onDelete = ForeignKey.CASCADE))
 public class Item {
 
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "uid")
+    @NonNull
     private int uid;
 
     @ColumnInfo(name = "content")
