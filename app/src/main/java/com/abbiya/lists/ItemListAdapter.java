@@ -1,6 +1,7 @@
 package com.abbiya.lists;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,14 +23,25 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ItemVi
     @Override
     public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = mInflater.inflate(R.layout.recyclerview_item, viewGroup, false);
-        return new ItemViewHolder(itemView);
+        ItemViewHolder itemViewHolder = new ItemViewHolder(itemView);
+
+        return itemViewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
         if (mItems != null) {
-            Item current = mItems.get(i);
+            final Item current = mItems.get(i);
             itemViewHolder.itemView.setText(current.getContent());
+
+            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent nextI = new Intent(v.getContext(), MainActivity.class);
+                    nextI.putExtra(MainActivity.PARENT_ID, current.getUid());
+                    v.getContext().startActivity(nextI);
+                }
+            });
         } else {
             itemViewHolder.itemView.setText("No items");
         }

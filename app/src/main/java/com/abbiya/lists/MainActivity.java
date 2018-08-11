@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
     private ItemViewModel mItemViewModel;
-    private static final String PARENT_ID = "parent_id";
+    public static final String PARENT_ID = "parent_id";
 
     Integer parentID;
 
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Intent i = getIntent();
-        if (i == null) {
+        if (i != null && i.getExtras() != null) {
             int parentID = i.getExtras().getInt(PARENT_ID);
             this.parentID = new Integer(parentID);
         } else {
@@ -106,10 +106,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (requestCode == NEW_WORD_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             String content = data.getStringExtra(NewItemActivity.EXTRA_REPLY);
+
+            Date d = new Date();
+
             Item item = new Item();
             item.setContent(content);
-            Date d = new Date();
-            ;
+            item.setParentId(parentID);
             item.setCreatedAt(d);
             item.setUpdatedAt(d);
 
