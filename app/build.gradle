@@ -37,7 +37,11 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:$rootProject.roomVersion"
     annotationProcessor "android.arch.persistence.room:compiler:$rootProject.roomVersion"
 
+    implementation "android.arch.paging:runtime:$rootProject.pagingVersion"
+
     // Lifecycle components
     implementation "android.arch.lifecycle:extensions:$rootProject.archLifecycleVersion"
     annotationProcessor "android.arch.lifecycle:compiler:$rootProject.archLifecycleVersion"
+
+    implementation 'org.apache.lucene:lucene-core:3.6.0'
 }

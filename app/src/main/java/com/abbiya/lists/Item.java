@@ -7,8 +7,13 @@ import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity(tableName = "items", indices = {@Index("content"), @Index("parent_id")},
         foreignKeys = @ForeignKey(entity = Item.class,
@@ -77,5 +82,16 @@ public class Item {
 
     public void setParentId(@Nullable Integer parentId) {
         this.parentId = parentId;
+    }
+
+    public String toCSV() {
+        List<String> x = new ArrayList<>();
+        x.add(String.valueOf(uid));
+        x.add(content);
+        x.add(parentId == null ? "": parentId.toString());
+        x.add(createdAt.toString());
+        x.add(updatedAt.toString());
+
+        return TextUtils.join(",", x);
     }
 }

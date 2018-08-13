@@ -2,6 +2,7 @@ package com.abbiya.lists;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.paging.PagedList;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -9,6 +10,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -17,13 +19,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.Date;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     public static final int NEW_WORD_ACTIVITY_REQUEST_CODE = 1;
     private ItemViewModel mItemViewModel;
     public static final String PARENT_ID = "parent_id";
+
+    final ItemAdapter adapter = new ItemAdapter();
 
     Integer parentID;
 
@@ -43,27 +46,12 @@ public class MainActivity extends AppCompatActivity {
         }
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final ItemListAdapter adapter = new ItemListAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mItemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
 
-        if (parentID == null) {
-            mItemViewModel.getRoots().observe(this, new Observer<List<Item>>() {
-                @Override
-                public void onChanged(@Nullable List<Item> items) {
-                    adapter.setItems(items);
-                }
-            });
-        } else {
-            mItemViewModel.getChildren(parentID).observe(this, new Observer<List<Item>>() {
-                @Override
-                public void onChanged(@Nullable List<Item> items) {
-                    adapter.setItems(items);
-                }
-            });
-        }
+        populateList();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,19 +60,57 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-
                 Intent intent = new Intent(MainActivity.this, NewItemActivity.class);
                 startActivityForResult(intent, NEW_WORD_ACTIVITY_REQUEST_CODE);
             }
         });
     }
 
+    private void populateList() {
+        if (parentID == null) {
+            mItemViewModel.getRoots().observe(this, new Observer<PagedList<Item>>() {
+                @Override
+                public void onChanged(@Nullable PagedList<Item> items) {
+                    adapter.submitList(items);
+                }
+            });
+        } else {
+            mItemViewModel.getChildren(parentID).observe(this, new Observer<PagedList<Item>>() {
+                @Override
+                public void onChanged(@Nullable PagedList<Item> items) {
+                    adapter.submitList(items);
+                }
+            });
+        }
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main, menu);
+        MenuItem myActionMenuItem = menu.findItem( R.id.action_search);
+        SearchView searchView = (SearchView) myActionMenuItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                mItemViewModel.search(parentID, s.trim()).observe(MainActivity.this, new Observer<PagedList<Item>>() {
+                    @Override
+                    public void onChanged(@Nullable PagedList<Item> items) {
+                        adapter.submitList(items);
+                    }
+                });
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                if (s.trim().isEmpty()){
+                    populateList();
+                }
+                return false;
+            }
+        });
+
         return true;
     }
 
@@ -96,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_search) {
             return true;
         }
 

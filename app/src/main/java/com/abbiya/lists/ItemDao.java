@@ -1,6 +1,7 @@
 package com.abbiya.lists;
 
 import android.arch.lifecycle.LiveData;
+import android.arch.paging.DataSource;
 import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Delete;
 import android.arch.persistence.room.Insert;
@@ -13,31 +14,31 @@ import java.util.List;
 public interface ItemDao {
     // get all items
     @Query("SELECT * FROM items ORDER BY updated_at DESC, created_at DESC")
-    public LiveData<List<Item>> getAllItems();
+    public DataSource.Factory<Integer, Item> getAllItems();
 
     // get an item by id
     @Query("SELECT * FROM items WHERE uid = (:uid)")
-    public LiveData<Item> getItem(Integer uid);
+    public DataSource.Factory<Integer, Item> getItem(Integer uid);
 
     // get all top level items
     @Query("SELECT * FROM items WHERE parent_id IS NULL ORDER BY updated_at DESC, created_at DESC")
-    public LiveData<List<Item>> getAllRoots();
+    public DataSource.Factory<Integer, Item> getAllRoots();
 
     // get children of an item
     @Query("SELECT * FROM items WHERE parent_id = (:uid) ORDER BY updated_at DESC, created_at DESC")
-    public LiveData<List<Item>> getAllItemsOfParent(Integer uid);
+    public DataSource.Factory<Integer, Item> getAllItemsOfParent(Integer uid);
 
     // search all items for content and return items
     @Query("SELECT * FROM items WHERE content LIKE (:content) ORDER BY updated_at DESC, created_at DESC")
-    public LiveData<List<Item>> findItemsWithContent(String content);
+    public DataSource.Factory<Integer, Item> findItemsWithContent(String content);
 
     // search child items of an item for content
     @Query("SELECT * FROM items WHERE parent_id = (:uid) AND content LIKE (:content) ORDER BY updated_at DESC, created_at DESC")
-    public LiveData<List<Item>> searchItemsOfParent(Integer uid, String content);
+    public DataSource.Factory<Integer, Item> searchItemsOfParent(Integer uid, String content);
 
     // search only the top level root items for content
     @Query("SELECT * FROM items WHERE parent_id IS NULL AND content LIKE (:content) ORDER BY updated_at DESC, created_at DESC")
-    public LiveData<List<Item>> searchRoots(String content);
+    public DataSource.Factory<Integer, Item> searchRoots(String content);
 
     // get children count of a item
     @Query("SELECT COUNT(uid) FROM items WHERE parent_id = (:parentId)")
