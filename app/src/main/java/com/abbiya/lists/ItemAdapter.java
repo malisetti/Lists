@@ -18,7 +18,7 @@ public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHold
                 // but ID is fixed.
                 @Override
                 public boolean areItemsTheSame(Item oldItem, Item newItem) {
-                    return oldItem.getUid() == newItem.getUid();
+                    return oldItem.getUid() == newItem.getUid() && 0 == oldItem.getUpdatedAt().compareTo(newItem.getUpdatedAt());
                 }
 
                 @Override
@@ -44,9 +44,7 @@ public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder itemViewHolder, int i) {
         final Item item = getItem(i);
-        if (item == null) {
-            itemViewHolder.clear();
-        } else {
+        if (item != null) {
             itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -70,10 +68,6 @@ public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHold
 
         public void bindTo(Item item) {
             itemView.setText(item.getContent());
-        }
-
-        public void clear() {
-
         }
     }
 }
