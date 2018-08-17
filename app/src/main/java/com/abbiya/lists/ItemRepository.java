@@ -5,22 +5,22 @@ import android.arch.lifecycle.LiveData;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
 
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class ItemRepository {
 
     private ItemDao mItemDao;
 
-    private LiveData<PagedList<Item>> mRoots;
+    private ExecutorService executor = Executors.newSingleThreadExecutor();
 
     ItemRepository(Application application) {
         Database db = Database.getDatabase(application);
         mItemDao = db.itemDao();
-        mRoots = new LivePagedListBuilder<>(mItemDao.getAllRoots(), 20).build();
     }
 
     LiveData<PagedList<Item>> getAllRoots() {
-        return mRoots;
+        return new LivePagedListBuilder<>(mItemDao.getAllRoots(), 20).build();
     }
 
     LiveData<PagedList<Item>> getChildren(int i) {
@@ -35,11 +35,20 @@ public class ItemRepository {
         return new LivePagedListBuilder<>(mItemDao.searchItemsOfParent(i, "%"+content+"%"), 20).build();
     }
 
-    public void insert(Item item) {
-        Executors.newSingleThreadExecutor().submit(new Runnable() {
+    public void insert(final Item item) {
+        executor.submit(new Runnable() {
             @Override
             public void run() {
                 mItemDao.insert(item);
+            }
+        });
+    }
+
+    public void delete(final Item item) {
+        executor.submit(new Runnable() {
+            @Override
+            public void run() {
+                mItemDao.delete(item);
             }
         });
     }

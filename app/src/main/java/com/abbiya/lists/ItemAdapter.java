@@ -1,8 +1,10 @@
 package com.abbiya.lists;
 
 import android.arch.paging.PagedListAdapter;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,7 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
 public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHolder> {
+
+    private ItemViewModel viewModel;
+    DateFormat simpleDate =  new SimpleDateFormat("dd/MM/yyyy");
 
     private static DiffUtil.ItemCallback<Item> DIFF_CALLBACK =
             new DiffUtil.ItemCallback<Item>() {
@@ -30,6 +38,10 @@ public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHold
 
     protected ItemAdapter() {
         super(DIFF_CALLBACK);
+    }
+
+    public void setViewModel(ItemViewModel viewModel) {
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -54,20 +66,51 @@ public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHold
                 }
             });
 
+            itemViewHolder.itemView.setOnLongClickListener(
+                    new View.OnLongClickListener() {
+                        @Override
+                        public boolean onLongClick(View v) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                            builder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    viewModel.delete(item);
+                                }
+                            });
+
+                            builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+                            builder.setTitle("Delete list");
+                            builder.setMessage("Are you sure ?");
+
+                            builder.create().show();
+
+                            return true;
+                        }
+                    }
+            );
+
             itemViewHolder.bindTo(item);
         }
     }
 
-    static class ItemViewHolder extends RecyclerView.ViewHolder {
-        private TextView itemView;
+    class ItemViewHolder extends RecyclerView.ViewHolder {
+        private TextView content;
+        private TextView touchedDate;
 
         public ItemViewHolder(View itemView) {
             super(itemView);
-            this.itemView = itemView.findViewById(R.id.textView);
+            this.content = itemView.findViewById(R.id.content);
+            this.touchedDate = itemView.findViewById(R.id.touchedDate);
         }
 
         public void bindTo(Item item) {
-            itemView.setText(item.getContent());
+            content.setText(item.getContent());
+            touchedDate.setText(simpleDate.format(item.getUpdatedAt()));
         }
     }
 }

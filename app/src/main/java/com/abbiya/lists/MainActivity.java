@@ -51,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
 
         mItemViewModel = ViewModelProviders.of(this).get(ItemViewModel.class);
 
+        adapter.setViewModel(mItemViewModel);
+
         populateList();
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
