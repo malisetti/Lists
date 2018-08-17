@@ -4,7 +4,8 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.paging.LivePagedListBuilder;
 import android.arch.paging.PagedList;
-import android.os.AsyncTask;
+
+import java.util.concurrent.Executors;
 
 public class ItemRepository {
 
@@ -35,26 +36,11 @@ public class ItemRepository {
     }
 
     public void insert(Item item) {
-        new insertAsyncTask(mItemDao).execute(item);
-    }
-
-    private static class insertAsyncTask extends AsyncTask<Item, Item, Item> {
-
-        private ItemDao itemDao;
-
-        insertAsyncTask(ItemDao itemDao) {
-            this.itemDao = itemDao;
-        }
-
-        @Override
-        protected Item doInBackground(Item... items) {
-            try {
-                itemDao.insert(items[0]);
-            } catch (Exception e) {
-
+        Executors.newSingleThreadExecutor().submit(new Runnable() {
+            @Override
+            public void run() {
+                mItemDao.insert(item);
             }
-
-            return null;
-        }
+        });
     }
 }
