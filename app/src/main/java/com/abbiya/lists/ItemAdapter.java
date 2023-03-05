@@ -1,12 +1,13 @@
 package com.abbiya.lists;
 
-import android.arch.paging.PagedListAdapter;
+import androidx.appcompat.app.AlertDialog;
+import androidx.paging.PagedListAdapter;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.util.DiffUtil;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.DiffUtil;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHolder> {
 
@@ -30,9 +32,8 @@ public class ItemAdapter extends PagedListAdapter<Item, ItemAdapter.ItemViewHold
                 }
 
                 @Override
-                public boolean areContentsTheSame(Item oldItem,
-                                                  Item newItem) {
-                    return oldItem.equals(newItem);
+                public boolean areContentsTheSame(Item oldItem, Item newItem) {
+                    return Objects.equals(oldItem, newItem);
                 }
             };
 

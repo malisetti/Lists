@@ -1,9 +1,9 @@
 package com.abbiya.lists;
 
 import android.app.Application;
-import android.arch.lifecycle.LiveData;
-import android.arch.paging.LivePagedListBuilder;
-import android.arch.paging.PagedList;
+import androidx.lifecycle.LiveData;
+import androidx.paging.LivePagedListBuilder;
+import androidx.paging.PagedList;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

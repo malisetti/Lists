@@ -1,10 +1,10 @@
 package com.abbiya.lists;
 
 import android.app.Application;
-import android.arch.lifecycle.AndroidViewModel;
-import android.arch.lifecycle.LiveData;
-import android.arch.paging.PagedList;
-import android.support.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LiveData;
+import androidx.paging.PagedList;
+import androidx.annotation.NonNull;
 
 public class ItemViewModel extends AndroidViewModel {
 
